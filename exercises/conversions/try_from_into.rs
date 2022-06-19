@@ -21,8 +21,6 @@ enum IntoColorError {
     IntConversion,
 }
 
-// I AM NOT DONE
-
 // Your task is to complete this implementation
 // and return an Ok result of inner type Color.
 // You need to create an implementation for a tuple of three integers,
@@ -36,6 +34,31 @@ enum IntoColorError {
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        // i feel like this should work but I don't know why it doesn't
+        // Ok(Color {
+        //     red: tuple.0.try_into()?,
+        //     green: tuple.1.try_into()?,
+        //     blue: tuple.2.try_into()?,
+        // })
+        match tuple {
+            (r @ 0..=255, g @ 0..=255, b @ 0..=255) => Ok(Color {
+                red: r as u8,
+                green: g as u8,
+                blue: b as u8,
+            }),
+            _ => Err(IntoColorError::IntConversion),
+        }
+        // if tuple.0.is_negative() || tuple.1.is_negative() || tuple.2.is_negative() {
+        //     return Err(IntoColorError::IntConversion);
+        // }
+        // if tuple.0 > 255 || tuple.1 > 255 || tuple.2 > 255 {
+        //     return Err(IntoColorError::IntConversion);
+        // }
+        // Ok(Color {
+        //     red: tuple.0 as u8,
+        //     green: tuple.1 as u8,
+        //     blue: tuple.2 as u8,
+        // })
     }
 }
 
@@ -43,6 +66,15 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        arr[..].try_into()
+        // if arr.iter().any(|&x| x.is_negative() || x > 255) {
+        //     return Err(IntoColorError::IntConversion);
+        // }
+        // Ok(Color {
+        //     red: arr[0] as u8,
+        //     green: arr[1] as u8,
+        //     blue: arr[2] as u8,
+        // })
     }
 }
 
@@ -50,6 +82,18 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        if slice.len() != 3 {
+            return Err(IntoColorError::BadLen);
+        }
+        (slice[0], slice[1], slice[2]).try_into()
+        // if slice.iter().any(|&x| x.is_negative() || x > 255) {
+        //     return Err(IntoColorError::IntConversion);
+        // }
+        // return Ok(Color {
+        //     red: slice[0] as u8,
+        //     green: slice[1] as u8,
+        //     blue: slice[2] as u8,
+        // });
     }
 }
 
